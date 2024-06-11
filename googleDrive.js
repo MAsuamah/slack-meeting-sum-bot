@@ -37,8 +37,8 @@ export const downloadAndGetInsight = async(file) => {
         )
 
         const chunks = [];
-        response.data.on('data', (chunk) => {chunks.push(chunk);});
-        return new Promise((resolve, reject) => {
+        const summary = await new Promise((resolve, reject) => {
+            response.data.on('data', (chunk) => { chunks.push(chunk); });
             response.data.on('end', async () => {
                 const buffer = Buffer.concat(chunks);
                 try {
@@ -50,10 +50,23 @@ export const downloadAndGetInsight = async(file) => {
                 }
             });
         });
+        return { fileName: file.name, summary };
     } catch(error) {
         console.error('Error fetching file:', error);
         throw error;    
     }
 }
+
+export const getFileName = async (id) => {
+    try {
+        const response = await drive.files.get({ fileId: id, fields: 'name'})
+        let { name } = response.data
+        return name;
+    } catch(error) {
+      console.log(error.message);
+    }
+}
+
+getFileName('13WfxJPMvMGao0I2ZU1m7e-xbKqfgIY2J')
 
 searchFiles()
