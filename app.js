@@ -19,9 +19,12 @@ app.command('/sum', async ({ command, ack, say }) => {
 	await ack();
   
   let meetingURL = command.text;
+  console.log(meetingURL)
   let urlSplit = meetingURL.split('/');
   let meetingId = urlSplit[5];
+  console.log(meetingId)
   let audioUrl = `https://drive.google.com/u/0/uc?id=${meetingId}&export=download`
+  console.log(audioUrl)
   const params = { audio: audioUrl }
   const transcript = await client.transcripts.transcribe(params)
   const prompt = `Provide a summary of this meeting. Make sure to highlight important topics of the meeting and do so by providing a title for each topic, one sentence briefly describing the topic, 2-3 bullet points summarizing the topic, and a list action items for each topic. 
@@ -40,7 +43,6 @@ app.command('/sum', async ({ command, ack, say }) => {
   console.log(response)
 
   await say(`⏩ *_Meeting Summary:_* \n ${response} \n\n 🔗 *Meeting Link:* ${meetingURL} `)
-
 });
 
 (async () => {
