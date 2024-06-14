@@ -33,7 +33,7 @@ export const searchFiles = async() => {
         const summaryPromises = files.map(summarizeFile);
         const summaries = await Promise.all(summaryPromises);
     
-/*         const starFilePromises = files.map(file => {
+        const starFilePromises = files.map(file => {
             return drive.files.update({
                 fileId: file.id,
                 requestBody: {
@@ -42,7 +42,7 @@ export const searchFiles = async() => {
             });
         }); 
 
-        await Promise.all(starFilePromises);  */
+        await Promise.all(starFilePromises);
 
         return summaries;
 
@@ -54,11 +54,7 @@ export const searchFiles = async() => {
 export const summarizeFile = async(file) => {
     let id = typeof file !== 'string' ? file.id : file;
     try {
-        const response = await drive.files.get(
-            {fileId: id, alt: 'media'},
-            {responseType: 'stream'}
-        );
-
+        const response = await drive.files.get({fileId: id, alt: 'media'}, {responseType: 'stream'});
         const chunks = [];
         const summary = await new Promise((resolve, reject) => {
             response.data.on('data', (chunk) => { chunks.push(chunk)});

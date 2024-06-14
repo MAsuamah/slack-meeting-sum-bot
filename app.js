@@ -1,6 +1,7 @@
 import pkg from '@slack/bolt';
 import 'dotenv/config';
 import { summarizeFile, getFileName, searchFiles } from './googleDrive.js';
+import { runCronJob } from './cronJob.js';
 
 const { App } = pkg;
 const app = new App({
@@ -10,7 +11,7 @@ const app = new App({
 	appToken: process.env.SLACK_APP_TOKEN,
 });
 
-const publishSummary = async() => {
+export const publishSummary = async() => {
   const posts = await searchFiles();
   const postPromises = posts.map(post => {
     return app.client.chat.postMessage({
@@ -42,7 +43,7 @@ app.command('/mtg', async ({ command, ack, say }) => {
 const startApp = async () => {
   await app.start(process.env.PORT || 3000);
   console.log(`⚡️ Bot app is running on port ${process.env.PORT || 3000}!`);
-  await publishSummary();
+  runCronJob();
 };
 
 startApp();

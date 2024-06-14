@@ -14,7 +14,8 @@ export const assemblySdk = async(meetingAudio) => {
                     ✅ _Action Items_:
                     <* list of action items>
                     `
-    const {response}  = await client.lemur.task({transcript_ids: [transcript.id], prompt});
+    const { response } = await client.lemur.task({transcript_ids: [transcript.id], prompt});
+    
     return response;
 };
 
