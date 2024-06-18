@@ -12,7 +12,7 @@ const app = new App({
 });
 
 const job = new CronJob(
-  '*/5 * * * 1-5',
+  '0 13 * * 1',
   async () => {
     try {
       await publishSummary()
