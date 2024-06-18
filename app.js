@@ -55,9 +55,16 @@ app.command('/mtg', async ({ command, ack, say }) => {
 });
 
 const startApp = async () => {
-  await app.start(process.env.PORT || 3000);
-  console.log(`⚡️ Bot app is running on port ${process.env.PORT || 3000}!`);
-  job.start()
+  const port = process.env.PORT || 3000;
+  console.log(`Starting app on port: ${port}`);
+
+  try {
+    await app.start(port);
+    console.log(`⚡️ Bot app is running on port ${port}!`);
+    job.start();
+  } catch (error) {
+    console.error('Failed to start app:', error);
+  }
 };
 
 startApp();
