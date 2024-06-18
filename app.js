@@ -1,7 +1,7 @@
 import pkg from '@slack/bolt';
 import 'dotenv/config';
 import { summarizeFile, getFileName, searchFiles } from './googleDrive.js';
-import { runCronJob } from './cronJob.js';
+import { CronJob } from 'cron';
 
 const { App } = pkg;
 const app = new App({
@@ -11,17 +11,31 @@ const app = new App({
 	appToken: process.env.SLACK_APP_TOKEN,
 });
 
-export const publishSummary = async() => {
+const job = new CronJob(
+  '*/5 * * * 1-5',
+  async () => {
+    try {
+      await publishSummary()
+    } catch (error) {
+      console.error('Error publishing summary:', error);
+    }
+  },
+  null,
+  'America/New_York'
+);
+
+const publishSummary = async() => {
   const posts = await searchFiles();
   const postPromises = posts.map(post => {
     return app.client.chat.postMessage({
       token: process.env.SLACK_BOT_TOKEN,
-      channel: 'C06C7LU2N73',
+      channel: 'C076J8GLWTZ',
       text: `⏩ *_${post.fileName}_* \n ${post.summary} \n\n 🔗 *Meeting Link:* ${post.meetingLink}`
     });
   });
 
   await Promise.all(postPromises);
+  console.log('Done!')
 };
 
 app.command('/mtg', async ({ command, ack, say }) => {
@@ -43,7 +57,7 @@ app.command('/mtg', async ({ command, ack, say }) => {
 const startApp = async () => {
   await app.start(process.env.PORT || 3000);
   console.log(`⚡️ Bot app is running on port ${process.env.PORT || 3000}!`);
-  runCronJob();
+  job.start()
 };
 
 startApp();

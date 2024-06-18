@@ -24,7 +24,7 @@ export const getFileName = async (id) => {
 export const searchFiles = async() => {
     try {
         const response = await drive.files.list({
-            q: `sharedWithMe and name contains 'Sprint Planning' and not starred`,
+            q: `sharedWithMe and name contains 'Sprint Planning' and mimeType contains 'video/' and not starred`,
             fields:  'files(id, name, webViewLink)',
             orderBy: 'createdTime'
         });
